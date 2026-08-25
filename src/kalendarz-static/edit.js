@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, SelectControl, TextControl, Button, TextareaControl } from '@wordpress/components';
+import { PanelBody, SelectControl, TextControl, Button } from '@wordpress/components';
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
  * Those files can contain any CSS code that gets applied to the editor.
@@ -40,7 +40,6 @@ export default function Edit({ attributes, setAttributes }) {
 	const addEvent = () => {
 		setAttributes({
 			events: [...events, {day: 1, title: '', desc: '' }]
-			// ParseInt(value, 10)
 		})
 	}
 
@@ -110,6 +109,13 @@ export default function Edit({ attributes, setAttributes }) {
 			<div className="kalendarz-preview-placeholder">
 				<strong>Kalendarz:</strong> {month}/{year} (Liczba wydarzeń: {events.length})
 				<p style={{fontSize: '12px', color: '#666'}}>Skonfiguruj dni i wydarzenia w panelu bocznym po prawej stronie.</p>
+				<ul>
+					{events.map((event, index) => (
+						<li key={index}>
+							<strong>{event.day}</strong> - <strong>{event.title}</strong>
+						</li>
+					))}
+				</ul>
 			</div>
 		</div>
 	);
