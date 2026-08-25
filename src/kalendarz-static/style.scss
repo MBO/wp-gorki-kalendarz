@@ -1,0 +1,46 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-kalendarz-static-kalendarz-static {
+	@media (min-width: 768px) {
+		.col-cal {
+			flex: 0 0 14.2857%;
+			max-width: 15.2857%;
+			min-height: 100px;
+		}
+		.text-day-none,
+		.text-day,
+		.text-day-6,
+		.text-day-7 {
+			background-color: #e2e3e5;
+		}
+	}
+	.text-day-none {
+		color: #87939c;
+	}
+	.text-day {
+		color: #383d41;
+	}
+	.text-day-6 {
+		color: #17a2b8;
+	}
+	.text-day-7 {
+		color: #dc3545;
+	}
+	.bg-day {
+		color: #fff;
+		background-color: #6c757d;
+	}
+	.bg-day-6 {
+		color: #fff;
+		background-color: #17a2b8;;
+	}
+	.bg-day-7 {
+		color: #fff;
+		background-color: #dc3545;;
+	}
+}

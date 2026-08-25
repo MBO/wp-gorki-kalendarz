@@ -1,0 +1,1 @@
+console.log("Hello World! (from kalendarz-static-kalendarz-static block)");
