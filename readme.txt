@@ -46,7 +46,10 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 == Changelog ==
 
 = 0.1.0 =
-* Release
+* Initial release, add show basic data in side panel
+
+= 0.2.0 =
+* Add support for properly sorking events
 
 == Arbitrary section ==
 

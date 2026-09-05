@@ -1,6 +1,6 @@
 {
 	"name": "kalendarz-static",
-	"version": "0.1.1",
+	"version": "0.2.0",
 	"description": "Example block scaffolded with Create Block tool.",
 	"author": "The WordPress Contributors",
 	"license": "GPL-2.0-or-later",
@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@wordpress/block-editor": "latest",
 		"@wordpress/blocks": "latest",
+		"@wordpress/components": "^40.0.0",
 		"@wordpress/i18n": "latest"
 	},
 	"devDependencies": {
