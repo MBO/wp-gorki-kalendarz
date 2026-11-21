@@ -2,7 +2,7 @@
 Contributors:      The WordPress Contributors
 Tags:              block
 Tested up to:      6.8
-Stable tag:        0.1.0
+Stable tag:        0.3.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,7 +49,10 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 * Initial release, add show basic data in side panel
 
 = 0.2.0 =
-* Add support for properly sorking events
+* Add support for properly sorting events
+
+= 0.3.0 =
+* Add support for for auto-hiding past events
 
 == Arbitrary section ==
 

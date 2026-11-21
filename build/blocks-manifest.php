@@ -5,7 +5,7 @@ return array(
 		'$schema' => 'https://schemas.wp.org/trunk/block.json',
 		'apiVersion' => 3,
 		'name' => 'kalendarz-static/kalendarz-static',
-		'version' => '0.1.0',
+		'version' => '0.3.0',
 		'title' => 'Kalendarz statyczny',
 		'category' => 'widgets',
 		'icon' => 'calendar-alt',
