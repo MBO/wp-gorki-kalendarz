@@ -4,7 +4,7 @@
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
  */
 import { __ } from '@wordpress/i18n';
-import { plus, trash } from '@wordpress/icons';
+import { plus, trash, time } from '@wordpress/icons';
 /**
  * React hook that is used to mark the block wrapper element.
  * It provides all the necessary props like the class name.
@@ -73,7 +73,7 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const addEvent = ( day ) => {
 		setAttributes( {
-			events: [ ...events, { day, title: '' } ],
+			events: [ ...events, { day, title: '', hidePast: true } ],
 		} );
 	};
 
@@ -92,6 +92,30 @@ export default function Edit( { attributes, setAttributes } ) {
 					updateEvent( event.index, 'title', value )
 				}
 				__nextHasNoMarginBottom
+			/>
+			<Button
+				className="kalendarz-editor-hide-past"
+				icon={ time }
+				label={
+					event.hidePast === true
+						? __(
+								'Automatyczne ukrywanie włączone. Kliknij, aby wyłączyć',
+								'kalendarz-static'
+							)
+						: __(
+								'Automatyczne ukrywanie wyłączone. Kliknij, aby włączyć',
+								'kalendarz-static'
+							)
+				}
+				showTooltip
+				isPressed={ event.hidePast === true }
+				onClick={ () =>
+					updateEvent(
+						event.index,
+						'hidePast',
+						event.hidePast !== true
+					)
+				}
 			/>
 			<Button
 				icon={ trash }

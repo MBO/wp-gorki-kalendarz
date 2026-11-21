@@ -3,9 +3,14 @@ $year = isset($attributes['year']) ? intval($attributes['year']) : intval(date('
 $month = isset($attributes['month']) ? intval($attributes['month']) : intval(date('m'));
 $events = isset($attributes['events']) ? $attributes['events'] : [];
 
+$today = current_time('Y-m-d');
 $events_by_day = [];
 foreach ($events as $event) {
 	if (isset($event['day'])) {
+		$event_date = sprintf('%04d-%02d-%02d', $year, $month, intval($event['day']));
+		if (!empty($event['hidePast']) && $event_date < $today) {
+			continue;
+		}
 		$events_by_day[intval($event['day'])][] = $event;
 	}
 }
