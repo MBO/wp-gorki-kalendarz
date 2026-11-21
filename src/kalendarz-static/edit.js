@@ -4,19 +4,15 @@
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
  */
 import { __ } from '@wordpress/i18n';
+import { plus, trash } from '@wordpress/icons';
 /**
  * React hook that is used to mark the block wrapper element.
  * It provides all the necessary props like the class name.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import {
-	PanelBody,
-	SelectControl,
-	TextControl,
-	Button,
-} from '@wordpress/components';
+import { useBlockProps } from '@wordpress/block-editor';
+import { SelectControl, TextControl, Button } from '@wordpress/components';
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
  * Those files can contain any CSS code that gets applied to the editor.
@@ -38,17 +34,36 @@ import './editor.scss';
  */
 export default function Edit( { attributes, setAttributes } ) {
 	const { year, month, events } = attributes;
-
-	const sortFunction = ( a, b ) => {
-		if ( a.day < b.day || ( a.day === b.day && a.title.toUpperCase() < b.title.toUpperCase() ) ) {
-			return -1;
-		}
-		if ( a.day > b.day || ( a.day === b.day && a.title.toUpperCase() > b.title.toUpperCase() ) ) {
-			return 1;
-		}
-
-		return 0;
-	};
+	const dayNames = [
+		__( 'Poniedziałek', 'kalendarz-static' ),
+		__( 'Wtorek', 'kalendarz-static' ),
+		__( 'Środa', 'kalendarz-static' ),
+		__( 'Czwartek', 'kalendarz-static' ),
+		__( 'Piątek', 'kalendarz-static' ),
+		__( 'Sobota', 'kalendarz-static' ),
+		__( 'Niedziela', 'kalendarz-static' ),
+	];
+	const firstDay = new Date( 0 );
+	firstDay.setFullYear( year, month - 1, 1 );
+	const offset = ( firstDay.getDay() + 6 ) % 7;
+	const lastDay = new Date( firstDay );
+	lastDay.setMonth( month, 0 );
+	const numberOfDays = lastDay.getDate();
+	const weeks = Array.from(
+		{ length: Math.ceil( ( offset + numberOfDays ) / 7 ) },
+		( _, weekIndex ) =>
+			Array.from( { length: 7 }, ( unused, dayIndex ) => {
+				const day = weekIndex * 7 + dayIndex - offset + 1;
+				return day > 0 && day <= numberOfDays ? day : null;
+			} )
+	);
+	const indexedEvents = events.map( ( event, index ) => ( {
+		...event,
+		index,
+	} ) );
+	const outsideEvents = indexedEvents.filter(
+		( event ) => event.day < 1 || event.day > numberOfDays
+	);
 
 	const updateEvent = ( index, key, value ) => {
 		const newEvents = [ ...events ];
@@ -56,9 +71,9 @@ export default function Edit( { attributes, setAttributes } ) {
 		setAttributes( { events: newEvents } );
 	};
 
-	const addEvent = () => {
+	const addEvent = ( day ) => {
 		setAttributes( {
-			events: [ ...events, { day: 1, title: '' } ],
+			events: [ ...events, { day, title: '' } ],
 		} );
 	};
 
@@ -67,63 +82,132 @@ export default function Edit( { attributes, setAttributes } ) {
 		setAttributes( { events: newEvents } );
 	};
 
-	const sortedEvents = events
-		.map( ( event, index ) => ( { ...event, index } ) )
-		.sort( sortFunction );
+	const renderEvent = ( event ) => (
+		<div className="kalendarz-editor-event" key={ event.index }>
+			<TextControl
+				label={ __( 'Tytuł wydarzenia', 'kalendarz-static' ) }
+				hideLabelFromVision
+				value={ event.title }
+				onChange={ ( value ) =>
+					updateEvent( event.index, 'title', value )
+				}
+				__nextHasNoMarginBottom
+			/>
+			<Button
+				icon={ trash }
+				label={ __( 'Usuń wydarzenie', 'kalendarz-static' ) }
+				showTooltip
+				isDestructive
+				onClick={ () => removeEvent( event.index ) }
+			/>
+		</div>
+	);
 
 	return (
-		<div { ...useBlockProps() }>
-			<InspectorControls>
-				<PanelBody
-					title={ __( 'Ustawienie Kalendarza', 'kalendarz-static' ) }
-					initialOpen={ true }
-				>
-					<SelectControl
-						label={ __( 'Miesiąc', 'kalendarz-static' ) }
-						value={ month }
-						options={ [
-							{ label: 'Styczeń', value: 1 },
-							{ label: 'Luty', value: 2 },
-							{ label: 'Marzec', value: 3 },
-							{ label: 'Kwiecień', value: 4 },
-							{ label: 'Maj', value: 5 },
-							{ label: 'Czerwiec', value: 6 },
-							{ label: 'Lipiec', value: 7 },
-							{ label: 'Sierpień', value: 8 },
-							{ label: 'Wrzesień', value: 9 },
-							{ label: 'Październik', value: 10 },
-							{ label: 'Listopad', value: 11 },
-							{ label: 'Grudzień', value: 12 },
-						] }
-						onChange={ ( val ) =>
-							setAttributes( { month: parseInt( val, 10 ) } )
-						}
-					/>
-					<TextControl
-						label={ __( 'Rok', 'kalendarz-static' ) }
-						type="number"
-						value={ year }
-						onChange={ ( val ) =>
-							setAttributes( {
-								year: parseInt( val, 10 ) || 2026,
-							} )
-						}
-					/>
-				</PanelBody>
-				<PanelBody
-					title={ __( 'Wydarzenia', 'kalendarz-static' ) }
-					intiaialOpen={ true }
-				>
-					{ sortedEvents.map( ( event ) => (
-						<div
-							key={ event.index }
-							style={ {
-								marginBottom: '15px',
-								padding: '10px',
-								border: '1px solid #ccc',
-								borderRadius: '4px',
-							} }
-						>
+		<div { ...useBlockProps( { className: 'kalendarz-editor' } ) }>
+			<div className="kalendarz-editor-settings">
+				<SelectControl
+					label={ __( 'Miesiąc', 'kalendarz-static' ) }
+					value={ month }
+					options={ [
+						{ label: 'Styczeń', value: 1 },
+						{ label: 'Luty', value: 2 },
+						{ label: 'Marzec', value: 3 },
+						{ label: 'Kwiecień', value: 4 },
+						{ label: 'Maj', value: 5 },
+						{ label: 'Czerwiec', value: 6 },
+						{ label: 'Lipiec', value: 7 },
+						{ label: 'Sierpień', value: 8 },
+						{ label: 'Wrzesień', value: 9 },
+						{ label: 'Październik', value: 10 },
+						{ label: 'Listopad', value: 11 },
+						{ label: 'Grudzień', value: 12 },
+					] }
+					onChange={ ( val ) =>
+						setAttributes( { month: parseInt( val, 10 ) } )
+					}
+				/>
+				<TextControl
+					label={ __( 'Rok', 'kalendarz-static' ) }
+					type="number"
+					min="1"
+					max="9999"
+					value={ year }
+					onChange={ ( val ) =>
+						setAttributes( {
+							year: Math.min(
+								9999,
+								Math.max( 1, parseInt( val, 10 ) || year )
+							),
+						} )
+					}
+				/>
+			</div>
+			<div
+				className="kalendarz-editor-scroll"
+				tabIndex={ 0 }
+				role="region"
+				aria-label={ __( 'Kalendarz wydarzeń', 'kalendarz-static' ) }
+			>
+				<table className="kalendarz-editor-table">
+					<caption className="screen-reader-text">
+						{ __( 'Kalendarz', 'kalendarz-static' ) }: { month }/
+						{ year }
+					</caption>
+					<thead>
+						<tr>
+							{ dayNames.map( ( name ) => (
+								<th key={ name } scope="col">
+									{ name }
+								</th>
+							) ) }
+						</tr>
+					</thead>
+					<tbody>
+						{ weeks.map( ( week, weekIndex ) => (
+							<tr key={ weekIndex }>
+								{ week.map( ( day, dayIndex ) => (
+									<td key={ dayIndex }>
+										{ day !== null && (
+											<>
+												<div className="kalendarz-editor-day">
+													<strong>{ day }</strong>
+													<Button
+														icon={ plus }
+														label={ `${ __( 'Dodaj wydarzenie: dzień', 'kalendarz-static' ) } ${ day }` }
+														showTooltip
+														onClick={ () =>
+															addEvent( day )
+														}
+													/>
+												</div>
+												{ indexedEvents
+													.filter(
+														( event ) =>
+															Number(
+																event.day
+															) === day
+													)
+													.map( renderEvent ) }
+											</>
+										) }
+									</td>
+								) ) }
+							</tr>
+						) ) }
+					</tbody>
+				</table>
+			</div>
+			{ outsideEvents.length > 0 && (
+				<div className="kalendarz-editor-outside">
+					<h3>
+						{ __(
+							'Wydarzenia poza wybranym miesiącem',
+							'kalendarz-static'
+						) }
+					</h3>
+					{ outsideEvents.map( ( event ) => (
+						<div key={ event.index }>
 							<TextControl
 								label={ __(
 									'Dzień miesiąca',
@@ -131,57 +215,27 @@ export default function Edit( { attributes, setAttributes } ) {
 								) }
 								type="number"
 								min="1"
-								max="31"
+								max={ numberOfDays }
 								value={ event.day }
-								onChange={ ( val ) =>
+								onChange={ ( value ) =>
 									updateEvent(
 										event.index,
 										'day',
-										parseInt( val, 10 ) || 1
+										Math.min(
+											numberOfDays,
+											Math.max(
+												1,
+												parseInt( value, 10 ) || 1
+											)
+										)
 									)
 								}
 							/>
-							<TextControl
-								label={ __(
-									'Tytuł wydarzenia',
-									'kalendarz-static'
-								) }
-								value={ event.title }
-								onChange={ ( val ) =>
-									updateEvent( event.index, 'title', val )
-								}
-							/>
-							<Button
-								isDestructive
-								onClick={ () => removeEvent( event.index ) }
-							>
-								{ __( 'Usuń', 'kalendarz-static' ) }
-							</Button>
+							{ renderEvent( event ) }
 						</div>
 					) ) }
-					<Button isPrimary onClick={ addEvent }>
-						{ __( 'Dodaj wydarzenie', 'kalendarz-static' ) }
-					</Button>
-				</PanelBody>
-			</InspectorControls>
-
-			{ /* Preview */ }
-			<div className="kalendarz-preview-placeholder">
-				<strong>Kalendarz:</strong> { month }/{ year } (Liczba wydarzeń:{ ' ' }
-				{ events.length })
-				<p style={ { fontSize: '12px', color: '#666' } }>
-					Skonfiguruj dni i wydarzenia w panelu bocznym po prawej
-					stronie.
-				</p>
-				<ul>
-					{ sortedEvents.map( ( event ) => (
-						<li key={ event.index }>
-							<strong>{ event.day }</strong> -{ ' ' }
-							<strong>{ event.title }</strong>
-						</li>
-					) ) }
-				</ul>
-			</div>
+				</div>
+			) }
 		</div>
 	);
 }

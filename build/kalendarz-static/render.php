@@ -28,7 +28,7 @@ $wrapper_attributes = get_block_wrapper_attributes(['class' => 'wp-block-kalenda
 ?>
 
 <div class="container my-4 wp-block-kalendarz-static-kalendarz-static">
-	<div class="row d-none d-md-flex text-center font-weight-bold bg-light border-bottom">
+	<div class="row d-none d-md-flex text-center fw-bold bg-light border-bottom gx-0">
 		<div class="col text-day bg-transparent"><?php echo esc_html($day_names[1]); ?></div>
 		<div class="col text-day bg-transparent"><?php echo esc_html($day_names[2]); ?></div>
 		<div class="col text-day bg-transparent"><?php echo esc_html($day_names[3]); ?></div>
@@ -38,11 +38,11 @@ $wrapper_attributes = get_block_wrapper_attributes(['class' => 'wp-block-kalenda
 		<div class="col text-day-7 bg-transparent"><?php echo esc_html($day_names[7]); ?></div>
 	</div>
 
-	<div class="row border-left text-left font-weight-bold">
+	<div class="row border-start text-start fw-bold gx-0">
 		<?php
 			// empty days before 1st day of month
 			for ($i = 1; $i < $day_of_week; $i++) {
-				echo '<div class="col-cal d-none d-md-block border-right border-bottom bg-light">';
+				echo '<div class="col-cal d-none d-md-block border-end border-bottom bg-light">';
 				echo '<div class="p-1 text-day-none">&nbsp;</div>';
 				echo '</div>';
 			}
@@ -54,14 +54,14 @@ $wrapper_attributes = get_block_wrapper_attributes(['class' => 'wp-block-kalenda
 				$dow_day = $day_names[$dow];
 
 				if ($has_events) {
-					echo '<div class="col-12 col-cal p-0 d-block border-right border-bottom">';
+					echo '<div class="col-12 col-cal p-0 d-block border-end border-bottom">';
 					echo '<div class="p-1 text-day' . esc_html($dow_class) . ' d-flex justify-content-between align-items-center">' . $day . ' <span class="d-md-none">' . esc_html($dow_day) . '</span></div>';
 					foreach ($events_by_day[$day] as $ev) {
 						echo '<div class="m-1 py-1 alert bg-day' . esc_html($dow_class) . ' text-center"><strong>' . esc_html($ev['title'] ?? '') . '</strong></div>';
 					}
 					echo '</div>';
 				} else {
-					echo '<div class="col-cal d-none d-md-block border-right border-bottom bg-light"><div class="p-1 text-day' . esc_html($dow_class) . '">' . $day . '</div></div>';
+					echo '<div class="col-cal d-none d-md-block border-end border-bottom bg-light"><div class="p-1 text-day' . esc_html($dow_class) . '">' . $day . '</div></div>';
 				}
 			}
 		?>

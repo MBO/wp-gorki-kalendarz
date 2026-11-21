@@ -4,6 +4,118 @@
  * Replace them with your own styles or remove the file completely.
  */
 
-.wp-block-kalendarz-static-kalendarz-static {
-	border: 1px dotted #f00;
+.wp-block-kalendarz-static-kalendarz-static.kalendarz-editor {
+	padding: 16px;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+	color: #1e1e1e;
+
+	.kalendarz-editor-settings {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+
+		> * {
+			flex: 1 1 140px;
+			min-width: 0;
+		}
+	}
+
+	.kalendarz-editor-scroll {
+		max-width: 100%;
+		overflow-x: auto;
+	}
+
+	.kalendarz-editor-table {
+		width: 100%;
+		min-width: 980px;
+		margin: 0;
+		border-collapse: collapse;
+		table-layout: fixed;
+		font-size: 13px;
+
+		th,
+		td {
+			padding: 6px;
+			border: 1px solid #c3c4c7;
+			vertical-align: top;
+		}
+
+		th {
+			background: #f0f0f1;
+			text-align: center;
+			overflow-wrap: anywhere;
+		}
+
+		td {
+			height: 120px;
+		}
+
+		td:empty {
+			background: #f6f7f7;
+		}
+
+		th:nth-child(6),
+		td:nth-child(6) .kalendarz-editor-day {
+			color: #007c91;
+		}
+
+		th:nth-child(7),
+		td:nth-child(7) .kalendarz-editor-day {
+			color: #b32d2e;
+		}
+	}
+
+	.kalendarz-editor-day,
+	.kalendarz-editor-event {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+
+		.components-button {
+			flex: 0 0 32px;
+			width: 32px;
+			min-width: 32px;
+			height: 32px;
+			padding: 4px;
+		}
+	}
+
+	.kalendarz-editor-day {
+		justify-content: space-between;
+		margin-bottom: 8px;
+	}
+
+	.kalendarz-editor-event {
+		margin-bottom: 6px;
+
+		> .components-base-control {
+			flex: 1;
+			min-width: 0;
+			margin-bottom: 0;
+		}
+
+		.components-base-control__field {
+			margin-bottom: 0;
+		}
+
+		input {
+			width: 100%;
+			min-width: 0;
+		}
+	}
+
+	.kalendarz-editor-outside {
+		margin-top: 16px;
+
+		h3 {
+			font-size: 16px;
+		}
+
+		> div {
+			max-width: 360px;
+			padding: 8px 0;
+			border-bottom: 1px solid #c3c4c7;
+		}
+	}
 }
